@@ -666,6 +666,8 @@ class BarAreaSpotsLine with EquatableMixin {
   // Offset top for specific tooltip
   final GetOffsetSpotLine getOffsetTopItem;
 
+  final GetOffsetSpotLine getOffsetBottomItem;
+
   /// Holds appearance of drawing line on the spots.
   final FlLine flLineStyle;
 
@@ -688,13 +690,15 @@ class BarAreaSpotsLine with EquatableMixin {
     GetFlLine? getFlLine,
     CheckToShowSpotLine? checkToShowSpotLine,
     GetOffsetSpotLine? getOffsetTopItem,
+    GetOffsetSpotLine? getOffsetBottomItem,
     bool? applyCutOffY,
   })  : offsetTop = offsetTop ?? 0,
         show = show ?? false,
         flLineStyle = flLineStyle ?? FlLine(),
         getFlLine = getFlLine,
         checkToShowSpotLine = checkToShowSpotLine ?? showAllSpotsBelowLine,
-        getOffsetTopItem = getOffsetTopItem ?? getDefaultOffsetTopItem,
+        getOffsetTopItem = getOffsetTopItem ?? getDefaultOffsetItem,
+        getOffsetBottomItem = getOffsetBottomItem ?? getDefaultOffsetItem,
         applyCutOffY = applyCutOffY ?? true;
 
   /// Lerps a [BarAreaSpotsLine] based on [t] value, check [Tween.lerp].
@@ -720,6 +724,7 @@ class BarAreaSpotsLine with EquatableMixin {
         getFlLine,
         checkToShowSpotLine,
         getOffsetTopItem,
+        getOffsetBottomItem,
         applyCutOffY,
       ];
 }
@@ -739,7 +744,7 @@ bool showAllSpotsBelowLine(FlSpot spot) {
   return true;
 }
 
-double getDefaultOffsetTopItem(FlSpot spot) {
+double getDefaultOffsetItem(FlSpot spot) {
   return 0;
 }
 
@@ -869,6 +874,8 @@ class FlDotCirclePainter extends FlDotPainter {
   /// The stroke width to use for the circle
   double strokeWidth;
 
+  double offsetY;
+
   /// The color of the circle is determined determined by [color],
   /// [radius] determines the radius of the circle.
   /// You can have a stroke line around the circle,
@@ -879,14 +886,17 @@ class FlDotCirclePainter extends FlDotPainter {
     double? radius,
     Color? strokeColor,
     double? strokeWidth,
+    double? offsetY,
   })  : color = color ?? Colors.green,
         radius = radius ?? 4.0,
         strokeColor = strokeColor ?? Colors.green.darken(),
-        strokeWidth = strokeWidth ?? 1.0;
+        strokeWidth = strokeWidth ?? 1.0,
+        offsetY = offsetY ?? 0;
 
   /// Implementation of the parent class to draw the circle
   @override
   void draw(Canvas canvas, FlSpot spot, Offset offsetInCanvas) {
+    offsetInCanvas = Offset(offsetInCanvas.dx, offsetInCanvas.dy + offsetY);
     if (strokeWidth != 0.0 && strokeColor.opacity != 0.0) {
       canvas.drawCircle(
           offsetInCanvas,
@@ -917,6 +927,7 @@ class FlDotCirclePainter extends FlDotPainter {
         radius,
         strokeColor,
         strokeWidth,
+        offsetY,
       ];
 }
 

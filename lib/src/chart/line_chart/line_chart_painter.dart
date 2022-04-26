@@ -290,7 +290,6 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
         final xPercentInLine = (x / barXDelta) * 100;
         final painter =
             barData.dotData.getDotPainter(spot, xPercentInLine, barData, i);
-
         canvasWrapper.drawDot(painter, spot, Offset(x, y));
       }
     }
@@ -759,9 +758,11 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
 
           final double _offsetTop =
               barData.aboveBarData.spotsLine.getOffsetTopItem(spot);
+          final double _offsetBottom =
+              barData.aboveBarData.spotsLine.getOffsetBottomItem(spot);
 
           canvasWrapper.drawDashedLine(
-            from,
+            Offset(from.dx, from.dy + _offsetBottom),
             Offset(to.dx, to.dy + _offsetTop),
             _barAreaLinesPaint,
             lineStyle.dashArray,
